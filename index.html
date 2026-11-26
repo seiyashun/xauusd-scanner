@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XAUUSD Order Flow & Consensus Scanner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div>
+        <h1>XAUUSD ORDER FLOW &amp; CONSENSUS</h1>
+        <p class="subtitle">Order Flow: Binance Futures <code>PAXGUSDT</code> • Consensus: TradingView <code>OANDA:XAUUSD</code></p>
+      </div>
+      <div class="price-box">
+        <span class="label">GIÁ PAXGUSDT (SPOT GOLD 1:1)</span>
+        <span id="live-price" class="price">---.--</span>
+        <span id="last-updated" class="updated">Đang tải...</span>
+      </div>
+    </header>
+
+    <section class="controls">
+      <div class="tf-group" id="tf-buttons">
+        <button class="tf-btn active" data-tf="30m">M30</button>
+        <button class="tf-btn" data-tf="1h">H1</button>
+        <button class="tf-btn" data-tf="4h">H4</button>
+      </div>
+      <button id="refresh-btn" class="refresh-btn">↻ Cập nhật ngay</button>
+    </section>
+
+    <div id="error-banner" class="error-banner hidden"></div>
+
+    <section class="main-grid">
+      <!-- Cột trái: Verdict từ Order Flow + MTF -->
+      <div class="verdict-card">
+        <span class="label">KẾT LUẬN DÒNG LỆNH KHUNG <strong id="active-tf-label">M30</strong></span>
+        <div id="verdict-badge" class="verdict-badge neutral">ĐANG QUÉT...</div>
+        <p id="verdict-reason" class="verdict-reason">Đang tải thống kê BUY / SELL từ Binance Futures...</p>
+
+        <div class="bar-section">
+          <div class="bar-header">
+            <span class="text-bull">TAKER BUY: <strong id="taker-buy-pct">--%</strong></span>
+            <span class="text-bear">TAKER SELL: <strong id="taker-sell-pct">--%</strong></span>
+          </div>
+          <div class="ratio-bar">
+            <div id="taker-buy-bar" class="bar-bull" style="width: 50%"></div>
+            <div id="taker-sell-bar" class="bar-bear" style="width: 50%"></div>
+          </div>
+        </div>
+
+        <div class="mtf-panel">
+          <span class="label">ĐỒNG THUẬN DÒNG LỆNH ĐA KHUNG (MTF)</span>
+          <div class="mtf-grid">
+            <div class="mtf-item"><span>M30</span><strong id="mtf-30m" class="tag neutral">---</strong></div>
+            <div class="mtf-item"><span>H1</span><strong id="mtf-1h" class="tag neutral">---</strong></div>
+            <div class="mtf-item"><span>H4</span><strong id="mtf-4h" class="tag neutral">---</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cột phải: TradingView Technical Consensus (26 chỉ báo) -->
+      <div class="tv-card">
+        <span class="label">TRADINGVIEW CONSENSUS (OANDA:XAUUSD • <strong id="tv-tf-label">M30</strong>)</span>
+        <div id="tv-widget-container" class="tv-container"></div>
+      </div>
+    </section>
+
+    <section class="metrics-grid">
+      <div class="card">
+        <span class="label">TAKER BUY / SELL RATIO</span>
+        <div id="metric-taker" class="ind-value">---</div>
+        <div id="metric-taker-status" class="ind-status">---</div>
+      </div>
+      <div class="card">
+        <span class="label">TOP TRADERS (VỊ THẾ LONG / SHORT)</span>
+        <div id="metric-top" class="ind-value">---</div>
+        <div id="metric-top-status" class="ind-status">---</div>
+      </div>
+      <div class="card">
+        <span class="label">RETAIL CROWD (TÀI KHOẢN LONG / SHORT)</span>
+        <div id="metric-retail" class="ind-value">---</div>
+        <div id="metric-retail-status" class="ind-status">---</div>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <h2>LỊCH SỬ 5 PHIÊN DÒNG LỆNH GẦN NHẤT (<span id="table-tf-label">M30</span>)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Thời gian (VN)</th>
+              <th>Taker Buy/Sell Ratio</th>
+              <th>Taker Buy %</th>
+              <th>Top Trader Long %</th>
+              <th>Retail Long %</th>
+              <th>Xu hướng phiên</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr><td colspan="6">Đang tải dữ liệu...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
