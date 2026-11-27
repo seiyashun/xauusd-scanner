@@ -1,4 +1,4 @@
-const SYMBOL = "PAXGUSDT";
+const SYMBOL = "XAUTUSDT";
 const FAPI_BASE = "https://fapi.binance.com";
 const TIMEFRAMES = ["30m", "1h", "4h"];
 const TF_LABELS = { "30m": "M30", "1h": "H1", "4h": "H4" };
