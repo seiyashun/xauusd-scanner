@@ -41,7 +41,7 @@ async function fetchOrderFlow(period, limit = 6) {
       sellPct: 100 - buyPct,
       topLongPct,
       retailLongPct,
-      bias: classifyBias(takerRatio, topLongPct)
+      bias: classifyBias(takerRatio, topLongPct, retailLongPct)
     };
   });
 
@@ -53,7 +53,25 @@ async function fetchOrderFlow(period, limit = 6) {
 }
 
 // --- SCORING ENGINE (ORDER FLOW + POSITIONING) ---
-function classifyBias(takerRatio, topLongPct) {
+function classifyBias(takerRatio, topLongPct, retailLongPct) {
+  if (retailLongPct >= 65 && (topLongPct <= 48 || takerRatio <= 0.95)) {
+    return {
+      verdict: "BULL_TRAP",
+      shortLabel: "BULL TRAP",
+      cssClass: "bear",
+      reason: `Cảnh báo Bẫy Tăng: Đám đông FOMO Long (${retailLongPct.toFixed(1)}%) nhưng Cá mập Short (${(100 - topLongPct).toFixed(1)}%) / Taker yếu (${takerRatio.toFixed(2)}).`
+    };
+  }
+
+  if (retailLongPct <= 35 && (topLongPct >= 52 || takerRatio >= 1.05)) {
+    return {
+      verdict: "BEAR_TRAP",
+      shortLabel: "BEAR TRAP",
+      cssClass: "bull",
+      reason: `Cảnh báo Bẫy Giảm: Đám đông bán tháo (${(100 - retailLongPct).toFixed(1)}% Short) nhưng Cá mập gom Long (${topLongPct.toFixed(1)}%) / Taker đỡ (${takerRatio.toFixed(2)}).`
+    };
+  }
+
   let score = 0;
 
   // 1. Lực mua/bán chủ động (Taker Volume)
@@ -147,6 +165,8 @@ function renderActiveView() {
   // Verdict badge
   const badge = document.getElementById("verdict-badge");
   badge.textContent =
+    latest.bias.verdict === "BULL_TRAP" ? "⚠ BULL TRAP (CẢNH BÁO BẪY TĂNG)" :
+    latest.bias.verdict === "BEAR_TRAP" ? "⚠ BEAR TRAP (CẢNH BÁO BẪY GIẢM)" :
     latest.bias.verdict === "BULLISH" ? "▲ BULL (PHE MUA ÁP ĐẢO)" :
     latest.bias.verdict === "BEARISH" ? "▼ BEAR (PHE BÁN ÁP ĐẢO)" :
     "◆ SIDEWAY (GIẰNG CO)";
